@@ -1,4 +1,4 @@
-# notes 1 2021-03-06 "NDC Tools Collection"
+# notes 1 2021-03-06 "NDC-Tools"
 
 ## NAME
 notes - manages note files.

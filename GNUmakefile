@@ -14,8 +14,7 @@ ADDMODS := str.o nc-readstr.o nc-core.o nc-keyb.o nc-view.o nc-list.o notes.o li
 
 CFLAGS  := -Os -Wall -Wformat=0 -D_GNU_SOURCE
 LDLIBS  := -lncursesw -lncurses
-#M2RFLAGS := -z
-M2RFLAGS := 
+M2RFLAGS := -z
 
 all: $(APPNAME)
 

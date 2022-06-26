@@ -1,4 +1,4 @@
-# notesrc 5 2021-01-22 "NDC Tools Collection"
+# notesrc 5 2021-01-22 "NDC-Tools"
 ## NAME
 notesrc - NDC's notes configuration file.
 
