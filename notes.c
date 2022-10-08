@@ -3,7 +3,7 @@
  *
  *	command-line notebook application
  * 
- *	Copyright (C) 2017-2021 Free Software Foundation, Inc.
+ *	Copyright (C) 2017-2022 Free Software Foundation, Inc.
  *
  *	This is free software: you can redistribute it and/or modify it under
  *	the terms of the GNU General Public License as published by the
@@ -21,10 +21,12 @@
  * 	Written by Nicholas Christopoulos <nereus@freemail.gr>
  */
 
+#include <stdint.h>
 #include <wchar.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <wctype.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
@@ -792,19 +794,18 @@ bool ex_input(char *buf, const char *prompt_fmt, ...) {
 	}
 
 // print status line
+static const char *vrt_ln = "┃";
 void ex_status_line(const char *fmt, ...) {
 	char	msg[LINE_MAX];
 	va_list ap;
 	va_start(ap, fmt);
 	vsnprintf(msg, LINE_MAX, fmt, ap);
 	va_end(ap);
-
+	
 	werase(w_inf);
-	wattron(w_inf, A_REVERSE);
+	nc_setvgacolor(w_inf, 0, 7);
 	mvwhline(w_inf, 0, 0, ' ', getmaxx(w_inf));
-	// │┃
-	nc_wprintf(w_inf, "%6d ┃ %s", list_count(notes), msg);
-	wattroff(w_inf, A_REVERSE);
+	nc_wprintf(w_inf, "%6d %s %s", list_count(notes), vrt_ln, msg);
 	wrefresh(w_inf);
 	}
 
@@ -986,8 +987,8 @@ void ex_colorize(char *dest, const char *src) {
 	char cstart[16], cend[16];
 	
 	if ( has_colors() ) { 
-		strcpy(cstart, "$C74"); 
-		strcpy(cend, "$c"); 
+		strcpy(cstart, "$p74"); 
+		strcpy(cend, "$p70"); 
 		}
 	else { 
 		strcpy(cstart, "$U");
@@ -1167,7 +1168,9 @@ void explorer() {
 				continue;
 			case KEY_LEFT:	if ( spos ) spos --; break;
 			case KEY_RIGHT:	if ( search[spos] ) spos ++; break;
+			case '':
 			case KEY_HOME:	spos = 0; break;
+			case '':
 			case KEY_END:	spos = slen; break;
 			case KEY_BACKSPACE:
 				if ( spos ) {
@@ -1610,7 +1613,7 @@ void cleanup() {
 #define APP_DESCR \
 "notes - notes manager"
 
-#define APP_VER "1.3"
+#define APP_VER "1.3a"
 
 static const char *usage = "\
 "APP_DESCR"\n\
@@ -1647,7 +1650,7 @@ static const char *verss = "\
 notes version "APP_VER"\n\
 "APP_DESCR"\n\
 \n\
-Copyright (C) 2020-2021 Nicholas Christopoulos.\n\
+Copyright (C) 2020-2022 Nicholas Christopoulos.\n\
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law.\n\

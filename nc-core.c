@@ -176,14 +176,22 @@ void nc_mvwprintf(WINDOW *win, int y, int x, const char *fmt, ...) {
 			ccase('r', A_REVERSE)
 			ccase('d', A_DIM)
 			ccase('u', A_UNDERLINE)
+			case 'p': // vga color
+				p ++;
+				if ( isxdigit(*p) && isxdigit(p[1]) ) {
+					if ( has_colors() )
+						nc_hclr(win, true, p[1], p[0]);
+					p ++;
+					}
+				break;
 			case 'c': // vga color
 				if ( *p == toupper(*p) ) {
 					p ++;
 					if ( isxdigit(*p) && isxdigit(p[1]) ) {
 						if ( csp < CSTACK_MAX ) {
 							if ( has_colors() )
-								nc_hclr(win, true, p[0], p[1]);
-							cstack[csp++] = (p[0] << 8) | p[1];
+								nc_hclr(win, true, p[1], p[0]);
+							cstack[csp++] = (p[1] << 8) | p[0];
 							}
 						p ++;
 						}

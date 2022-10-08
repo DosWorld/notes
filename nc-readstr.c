@@ -64,7 +64,9 @@ bool nc_mvweditstr(WINDOW *w, int y, int x, char *u8str, int maxlen) {
 		switch ( key ) {
 		case KEY_LEFT:	if ( pos ) pos --; break;
 		case KEY_RIGHT:	if ( str[pos] ) pos ++; break;
+		case '':
 		case KEY_HOME:	pos = 0; break;
+		case '':
 		case KEY_END:	pos = len; break;
 		case '\010': case '\x7f':
 		case KEY_BACKSPACE:
