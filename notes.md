@@ -152,5 +152,5 @@ There is NO WARRANTY, to the extent permitted by law.
 Written by Nicholas Christopoulos [nereus@freemail.gr](nereus@freemail.gr).
 
 ## SEE ALSO
-[notesrc 5](man), [groff_man 7](man), [man-pages 7](man).
+[notesrc 5](man).
 

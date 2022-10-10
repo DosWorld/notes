@@ -151,7 +151,5 @@ Written by Nicholas Christopoulos
 .ME .
 .PP
 .SH SEE ALSO
-.BR notesrc (5),
-.BR groff_man (7),
-.BR man-pages (7).
+.BR notesrc (5).
 .PP
