@@ -24,8 +24,7 @@ $ notes -s unix sig11
 $ notes '*sig*'
 .EE
 .in
-.TP
-\fBNaming\fR
+.SS Naming
 Notes naming used in forms, a) just title, b) section/title, c) title.type, d) section/title.type. We can edit, view, move, rename, etc by using any of these forms.
 .PP
 .SH OPTIONS
@@ -134,7 +133,7 @@ When ‘\f[CR]--rcfile\fP’ is given, \fBnotes\fP will read the specified file 
 .BR notesrc (5).
 .PP
 .SH COPYRIGHT
-Copyright © 2020-2021 Nicholas Christopoulos.
+Copyright © 2020-2022 Nicholas Christopoulos.
 .PP
 License GPLv3+: GNU GPL version 3 or later
 .UR https://gnu.org/licenses/gpl.html

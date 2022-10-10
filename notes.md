@@ -29,7 +29,7 @@ $ notes -s unix sig11
 $ notes '*sig*'
 ```
 
-#### Naming
+### Naming
 Notes naming used in forms, a) just title, b) section/title, c) title.type, d) section/title.type.
 We can edit, view, move, rename, etc by using any of these forms.
 
@@ -139,7 +139,7 @@ or `~/.notesrc`, whichever is encountered first.
 See [notesrc 5](man).
 
 ## COPYRIGHT
-Copyright © 2020-2021 Nicholas Christopoulos.
+Copyright © 2020-2022 Nicholas Christopoulos.
 
 License GPLv3+: GNU GPL version 3 or later [https://gnu.org/licenses/gpl.html](https://gnu.org/licenses/gpl.html).
 This is free software: you are free to change and redistribute it.
