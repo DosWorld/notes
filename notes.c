@@ -410,7 +410,7 @@ typedef struct { const char *name; char *value; } var_t;
 var_t var_table[] = {
 	{ "notebook", ndir },
 	{ "backupdir", bdir },
-	{ "clibber", sclob },
+	{ "clobber", sclob },
 	{ "deftype", default_ftype },
 	{ "onstart", onstart_cmd },
 	{ "onexit", onexit_cmd },
@@ -761,8 +761,7 @@ static int	t_notes_count;
 static list_t	*tagged;
 static WINDOW	*w_lst, *w_prv, *w_inf;
 typedef enum { ex_nav, ex_search } ex_mode_t;
-static int clr_code = 0x10;
-static int clr_text = 0x10;
+static int clr_code = 0x10, clr_text = 0x10, clr_bold = 0x10, clr_hide = 0x10;
 
 // short date
 const char *sdate(const time_t *t, char *buf) {
@@ -859,8 +858,8 @@ void ex_print_note(const note_t *note) {
 						buf[strlen(buf)-1] = '\0';
 					
 					switch ( buf[0] ) {
-					case '#': color = ( inside_code ) ? clr_code : clr_text; break;
-					case '`': if ( buf[1] == '`' && buf[2] == '`' ) inside_code = !inside_code; break;
+					case '#': color = ( inside_code ) ? clr_code : clr_bold; break;
+					case '`': if ( buf[1] == '`' && buf[2] == '`' ) { inside_code = !inside_code; color = clr_hide; } break;
 					case '\t': color = clr_code; break;
 					default: 
 						color = ( inside_code ) ? clr_code : clr_text;
@@ -1094,10 +1093,14 @@ void explorer() {
 
 	nc_init();
 	if ( COLORS >= 256 ) {
+		clr_bold = nc_createvgapair(0xf, 0);
+		clr_hide = nc_createvgapair(0x8, 0);
 		clr_code = nc_createpair(COLOR_GREEN, COLOR_BLACK);
 		clr_text = nc_createpair(COLOR_WHITE, COLOR_BLACK);
 		}
 	else {
+		clr_bold = nc_createpair(COLOR_WHITE, COLOR_BLACK);
+		clr_hide = nc_createpair(COLOR_BLACK, COLOR_BLACK);
 		clr_code = nc_createpair(COLOR_GREEN, COLOR_BLACK);
 		clr_text = nc_createpair(COLOR_WHITE, COLOR_BLACK);
 		}
@@ -1613,7 +1616,7 @@ void cleanup() {
 #define APP_DESCR \
 "notes - notes manager"
 
-#define APP_VER "1.3a"
+#define APP_VER "1.3c"
 
 static const char *usage = "\
 "APP_DESCR"\n\

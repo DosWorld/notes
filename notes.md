@@ -1,28 +1,17 @@
-# notes 1 2021-03-06 "NDC-Tools"
+# notes 1 2022-10-10 "NDC-Tools"
 
 ## NAME
 notes - manages note files.
 
 ## SYNOPSIS
-SYNTAX:
-	notes
-	-s section
-	-a[!][e] name [file ...][-]
-	-a[!]+[e] name [file ...][-]
-	-e[a] {name|pattern}
-	-v[a] {name|pattern}
-	-p[a] {name|pattern}
-	-l [pattern]
-	-f pattern
-	-d[a] {name|pattern}
-	-r old-name new-name
-	-c rcfile
-	[pattern]
+COMMAND: notes [-s section] -a[!][e] name [file ...][-] -a[!]+[e] name [file ...][-] \
+	-e[a] {name|pattern} -v[a] {name|pattern} -p[a] {name|pattern} -l [pattern] \
+	-f pattern -d[a] {name|pattern} -r oldname newname -c rcfile
 
 ## DESCRIPTION
 The notes-files are stored in a user-defined directory with optional subdirectories.
-The subdirectories in the application are named **sections**.
-Normally this directory is `~/.notes` or `~/Nextcloud/Notes` if there is _Nextcloud_.
+The subdirectories in the application are named _sections_.
+Normally this directory is `~/.notes` or `~/Nextcloud/Notes` if there is **Nextcloud**.
 It can be specified in the configuration file.
 The files can be plain text, markdown or anything else that can configured
 by the _rule_ command in the configuration file.
@@ -30,16 +19,19 @@ If the _note_ is `-` then it reads from **stdin**.
 
 Running program without arguments, enters in TUI mode (**ncurses** interface).
 
-The program was designed to behave as the `man` command.
-
+The program was designed to behave as the `man` command:
 ```
-> # show page(s) of section (i.e. subdirectory) 'unix'
-> # whose title begins with 'sig11'
-> notes -s unix sig11
+# show page(s) of section (i.e. subdirectory) 'unix'
+# whose title begins with 'sig11'
+$ notes -s unix sig11
 
-> # search and show notes for a title with patterns
-> notes '*sig*l1*'
+# search and show notes for a title with patterns
+$ notes '*sig*'
 ```
+
+#### Naming
+Notes naming used in forms, a) just title, b) section/title, c) title.type, d) section/title.type.
+We can edit, view, move, rename, etc by using any of these forms.
 
 ## OPTIONS
 
@@ -53,10 +45,10 @@ or set the clobber variable to _false_ in the configuration file.
 
 ```
 # example 1: cat yyy zzz > xxx
-> notes -a xxx yyy zzz
+$ notes -a xxx yyy zzz
 
 # example 2:
-> cat ~/.notesrc | notes -a! notesrc -
+$ cat ~/.notesrc | notes -a! notesrc -
 ```
 
 #### -a[!]+, --append[!]
@@ -67,6 +59,10 @@ or set the clobber variable to _false_ in the configuration file.
 
 #### -v, --view
 Shows the _note_ with the default **$PAGER** if one is not specified in the configuration file.
+
+```
+$ cat -v about-groff
+```
 
 #### -p, --print
 Same as `-v` but writes the contents to **stdout**.
@@ -79,7 +75,7 @@ Also, it can be used with `--add/--append` if it is next to it.
 Displays the notes names that match _pattern_.
 
 #### -f, --files
-Same as `-l` but prints out the full path filenames.
+Same as `-l` but prints out the _full-path filenames_.
 
 #### -d, --delete
 Deletes a note.
