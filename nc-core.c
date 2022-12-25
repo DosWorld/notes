@@ -33,9 +33,9 @@ static int to_vga[] =
 // create a new color pair and store it to pair_table
 int nc_createpair(int fg, int bg) {
 	if ( pair_table )
-		pair_table = (pair_t *) realloc(pair_table, sizeof(pair_t) * (pair_count+1));
+		pair_table = (pair_t *) m_realloc(pair_table, sizeof(pair_t) * (pair_count+1));
 	else
-		pair_table = (pair_t *) malloc(sizeof(pair_t) * (pair_count+1));
+		pair_table = (pair_t *) m_alloc(sizeof(pair_t) * (pair_count+1));
 	pair_table[pair_count].fg = fg;
 	pair_table[pair_count].bg = bg;
 	pair_table[pair_count].id = 0x10 + pair_count;
@@ -109,7 +109,7 @@ void nc_init() {
 void nc_close() {
 	endwin();
 	if ( pair_table )
-		free(pair_table);
+		m_free(pair_table);
 	pair_table = NULL;
 	pair_count = 0;
 	}

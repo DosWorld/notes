@@ -22,6 +22,8 @@
 #ifndef _NC_ADV_LIB_H_
 #define _NC_ADV_LIB_H_
 
+#include "errio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

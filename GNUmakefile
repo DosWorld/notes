@@ -10,7 +10,7 @@ man1dir ?= $(mandir)/man1
 man5dir ?= $(mandir)/man5
 
 APPNAME := notes
-ADDMODS := str.o nc-readstr.o nc-core.o nc-keyb.o nc-view.o nc-list.o notes.o list.o
+ADDMODS := str.o nc-readstr.o nc-core.o nc-keyb.o nc-view.o nc-list.o notes.o list.o errio.o
 
 CFLAGS  := -O -Wall -Wformat=0 -D_GNU_SOURCE
 LDLIBS  := -lncursesw -lncurses

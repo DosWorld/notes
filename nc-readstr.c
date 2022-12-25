@@ -31,9 +31,9 @@ bool nc_mvweditstr(WINDOW *w, int y, int x, char *u8str, int maxlen) {
 	char	*s;
 
 	wcs = u8towcs(u8str);
-	str = (wchar_t *) malloc(sizeof(wchar_t) * (maxlen + 1));
+	str = (wchar_t *) m_alloc(sizeof(wchar_t) * (maxlen + 1));
 	wcscpy(str, wcs);
-	free(wcs);
+	m_free(wcs);
 	len = wcslen(str);
 	ocurs = curs_set(1);
 	while ( true ) {
@@ -42,7 +42,7 @@ bool nc_mvweditstr(WINDOW *w, int y, int x, char *u8str, int maxlen) {
 		s = wcstou8(str);
 		if ( s ) {
 			mvwprintw(w, y, x, "%s", s);
-			free(s);
+			m_free(s);
 			}
 		mvwhline (w, y, x + len, ' ', maxlen - len);
 		
@@ -91,7 +91,7 @@ bool nc_mvweditstr(WINDOW *w, int y, int x, char *u8str, int maxlen) {
 		case 27: case '': case '': case '':
 		case KEY_CANCEL:
 			curs_set(ocurs);
-			free(str);
+			m_free(str);
 			return false; // canceled
 		case '\r': case '\n':
 		case KEY_ENTER: 

@@ -24,6 +24,7 @@
 //#endif
 #include <wchar.h>
 #include <assert.h>
+#include "errio.h"
 #include "str.h"
 
 #ifndef MIN
@@ -38,7 +39,7 @@ wchar_t *u8towcs(const char *str) {
 	
 	if ( wlen == (size_t) -1 )
 		wlen = 0;
-	wcs = (wchar_t *) malloc(sizeof(wchar_t) * (wlen + 1));
+	wcs = (wchar_t *) m_alloc(sizeof(wchar_t) * (wlen + 1));
 	wcs[wlen] = L'\0';
 	if ( wlen ) {
 		if ( mbstowcs(wcs, str, wlen+1) == (size_t) -1 )
@@ -52,7 +53,7 @@ char *wcstou8(const wchar_t *wcs) {
 	size_t len = wcstombs(NULL, wcs, 0);
 	if ( len == (size_t) -1 )
 		len = 0;
-	char *str = (char *) malloc(len + 1);
+	char *str = (char *) m_alloc(len + 1);
 	str[len] = '\0';
 	if ( wcstombs(str, wcs, len) == (size_t) -1 )
 		str[0] = '\0';
@@ -63,14 +64,14 @@ char *wcstou8(const wchar_t *wcs) {
 void u8cpytostr(char *u8buf, const wchar_t *wcs) {
 	char *s = wcstou8(wcs);
 	strcpy(u8buf, s);
-	free(s);
+	m_free(s);
 	}
 
 // copy mbs to wcs
 void u8cpytowcs(wchar_t *wcs, const char *u8str) {
 	wchar_t *s = u8towcs(u8str);
 	wcscpy(wcs, s);
-	free(s);
+	m_free(s);
 	}
 
 //
@@ -126,14 +127,14 @@ size_t	u8strlen(const char *str) {
 size_t u8width(const char *str) {
 	wchar_t *s = u8towcs(str);
 	int	n = wcswidth(s, wcslen(s));
-	free(s);
+	m_free(s);
 	return n;
 //	return u8strlen(str);
 	}
 
 // append source to string base
 char *stradd(char *base, const char *source) {
-	char *str = (char *) realloc(base, strlen(base) + strlen(source) + 1);
+	char *str = (char *) m_realloc(base, strlen(base) + strlen(source) + 1);
 	strcat(str, source);
 	return str;
 	}
@@ -143,13 +144,13 @@ char *concat(const char *s1, ...) {
 	va_list ap;
 	const char *s;
 	int len = strlen(s1) + 1;
-	char *str = (char *) malloc(len);
+	char *str = (char *) m_alloc(len);
 
 	strcpy(str, s1);
 	va_start(ap, s1);
 	while ( (s = va_arg(ap, const char *)) != NULL ) {
 		len += strlen(s);
-		str = (char *) realloc(str, len);
+		str = (char *) m_realloc(str, len);
 		strcat(str, s);
 		}
 	va_end(ap);
@@ -159,7 +160,7 @@ char *concat(const char *s1, ...) {
 // returns 'count' bytes at 'index' position of 'source'
 char *copy(const char *source, int index, int count) {
 	if ( count > 0 ) {
-		char *str = (char *) malloc(count + 1);
+		char *str = (char *) m_alloc(count + 1);
 		int len = strlen(source);
 	
 		if ( index >= len )
@@ -197,7 +198,7 @@ int	strpos(const char *source, const char *what) {
 char *insert(const char *source, int pos, const char *string) {
 	int		len = strlen(source);
 	
-	char *str = (char *) malloc(len + strlen(string) + 1);
+	char *str = (char *) m_alloc(len + strlen(string) + 1);
 	if ( pos == 0 ) {
 		strcpy(str, string);
 		strcat(str, source);
@@ -219,7 +220,7 @@ char *delete(const char *source, int pos, int count) {
 	if ( count < 0 )
 		count = len;	
 	if ( pos < len ) {
-		char *str = (char *) malloc((len - count) + 1);
+		char *str = (char *) m_alloc((len - count) + 1);
 		if ( pos == 0 )
 			strcpy(str, source + count);
 		else {
@@ -246,7 +247,7 @@ char* rtrim(char* str) {
 int cwords_add(cwords_t *list, const char *src) {
 	if ( list->count == list->alloc ) {
 		list->alloc += 16;
-		list->ptr = (const char **) realloc(list->ptr, list->alloc);
+		list->ptr = (const char **) m_realloc(list->ptr, list->alloc);
 		}
 	list->ptr[list->count ++] = src;
 	return list->count;
@@ -254,10 +255,10 @@ int cwords_add(cwords_t *list, const char *src) {
 
 //
 cwords_t *cwords_create() {
-	cwords_t *list = (cwords_t *) malloc(sizeof(cwords_t));
+	cwords_t *list = (cwords_t *) m_alloc(sizeof(cwords_t));
 	list->alloc = 16;
 	list->count = 0;
-	list->ptr = (const char **) malloc(sizeof(const char *) * list->alloc);
+	list->ptr = (const char **) m_alloc(sizeof(const char *) * list->alloc);
 	return list;
 	}
 
@@ -265,8 +266,8 @@ cwords_t *cwords_create() {
 const cwords_t *cwords_destroy(cwords_t *list) {
 	if ( list ) {
 		if ( list->alloc )
-			free(list->ptr);
-		free(list);
+			m_free(list->ptr);
+		m_free(list);
 		}
 	return NULL;
 	}
@@ -275,7 +276,7 @@ const cwords_t *cwords_destroy(cwords_t *list) {
 cwords_t *cwords_clear(cwords_t *list) {
 	if ( list ) {
 		if ( list->alloc )
-			free(list->ptr);
+			m_free(list->ptr);
 		list->alloc = 0;
 		}
 	return list;
@@ -351,7 +352,7 @@ int res_match(const char *pattern, const char *source) {
 int rex_replace(regex_t *r, char *source, const char *repl, size_t max_matches) {
 	size_t max_groups = 1, m, beg, end, rplen = strlen(repl);
 	regmatch_t groups[max_groups];
-	char *p = source, *buf = (char *) malloc(strlen(source) + rplen * max_matches + 1);
+	char *p = source, *buf = (char *) m_alloc(strlen(source) + rplen * max_matches + 1);
 	char *bp = buf;
 
 	p = source;
@@ -373,7 +374,7 @@ int rex_replace(regex_t *r, char *source, const char *repl, size_t max_matches) 
 	*bp = '\0';
 	strcat(bp, p);
 	strcpy(source, buf);
-	free(buf);
+	m_free(buf);
 	return 1;
 	}
 
@@ -402,7 +403,7 @@ char	**text_to_lines(const char *src) {
 		}
 	for ( p = str, lines = 0; *p; p ++ )
 		if ( *p == '\n' ) lines ++;
-	table = (char **) malloc(sizeof(char*) * (lines + 1));
+	table = (char **) m_alloc(sizeof(char*) * (lines + 1));
 	table[lines] = NULL;
 	pos = 0;
 	for ( ps = p = str; *p; p ++ ) {
@@ -412,15 +413,15 @@ char	**text_to_lines(const char *src) {
 			ps = p + 1;
 			}
 		}
-	free(str);
+	m_free(str);
 	return table;
 	}
 
-// frees a text-lines table
+// m_frees a text-lines table
 char **free_text_lines(char **table) {
 	for ( int i = 0; table[i]; i ++ )
-		free(table[i]);
-	free(table);
+		m_free(table[i]);
+	m_free(table);
 	return NULL;
 	}
 

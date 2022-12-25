@@ -104,7 +104,7 @@ void excl_add_pat(const char *pars) {
 		list_addstr(exclude, ptr);
 		ptr = strtok(NULL, delim);
 		}
-	free(string);
+	m_free(string);
 	}
 
 // user menu
@@ -125,7 +125,7 @@ void umenu_add(const char *pars) {
 		strcpy(u.label, p);
 		list_add(umenu, &u, sizeof(umenu_item_t));
 		}
-	free(src);
+	m_free(src);
 	}
 
 // keymap
@@ -295,7 +295,7 @@ void keymap_add(const char *pars) {
 				}
 			}
 		}
-	free(src);
+	m_free(src);
 	}
 
 // === configuration & interpreter ==========================================
@@ -331,7 +331,7 @@ void rule_add(const char *pars) {
 			if ( *p ) {
 				while ( isblank(*p) ) p ++;
 				if ( *p ) {
-					rule_t	*rule = (rule_t *) malloc(sizeof(rule_t));
+					rule_t	*rule = (rule_t *) m_alloc(sizeof(rule_t));
 					rule->code = action;
 					strcpy(rule->pattern, pattern);
 					strcpy(rule->command, p);
@@ -517,11 +517,11 @@ bool copy_file(const char *src, const char *trg) {
 			if ( mkdir(dd, 0755) != 0 ) {
 				fprintf(logf, "%s: errno %d: %s (mkdir [%s])\n", trg, errno, strerror(errno), dd);
 				fclose(inp);
-				free(dd);
+				m_free(dd);
 				return false;
 				}
 			}
-		free(dd);
+		m_free(dd);
 		}
 	if ( (outp = fopen(trg, "w")) == NULL ) {
 		fprintf(logf, "%s: errno %d: %s\n", trg, errno, strerror(errno));
@@ -531,8 +531,8 @@ bool copy_file(const char *src, const char *trg) {
 	
 	// copy
 	while ( !feof(inp) ) {
-		if ( (bytes = fread(buf, 1, sizeof(buf), inp)) > 0 )
-			fwrite(buf, 1, bytes, outp);
+		if ( (bytes = f_read(buf, 1, sizeof(buf), inp)) > 0 )
+			f_write(buf, 1, bytes, outp);
 		}
 	
 	// close
@@ -616,7 +616,7 @@ void dirwalk(const char *name) {
 		if ( entry->d_type == DT_DIR ) 
 			dirwalk(path);
 		else {
-			note_t *note = (note_t *) malloc(sizeof(note_t));
+			note_t *note = (note_t *) m_alloc(sizeof(note_t));
 			char	buf[PATH_MAX], *p, *e;
 			strcpy(note->file, path);
 			strcpy(buf, path + root_dir_len);
@@ -640,7 +640,7 @@ void dirwalk(const char *name) {
 					list_addstr(sections, note->section);
 				}
 			else
-				free(note);
+				m_free(note);
 			}
 		}
 	closedir(dir);
@@ -654,8 +654,8 @@ bool print_file_to(const char *file, FILE *output) {
 	
 	if ( (input = (file) ? fopen(file, "r") : stdin) != NULL ) {	
 		while ( !feof(input) ) {
-			if ( (bytes = fread(buf, 1, sizeof(buf), input)) > 0 )
-				fwrite(buf, 1, bytes, output);
+			if ( (bytes = f_read(buf, 1, sizeof(buf), input)) > 0 )
+				f_write(buf, 1, bytes, output);
 			}
 		if ( file ) fclose(input);
 		return true;
@@ -708,7 +708,7 @@ void make_section(const char *sec) {
 
 // create a note node
 note_t*	make_note(const char *name, const char *defsec, int flags) {
-	note_t *note = (note_t *) malloc(sizeof(note_t));
+	note_t *note = (note_t *) m_alloc(sizeof(note_t));
 	FILE *fp;
 	const char *p;
 
@@ -748,7 +748,7 @@ note_t*	make_note(const char *name, const char *defsec, int flags) {
 		if ( (fp = fopen(note->file, "wt")) != NULL )
 			fclose(fp);
 		else {
-			free(note);
+			m_free(note);
 			note = NULL;
 			}
 		}
@@ -946,7 +946,7 @@ bool ex_build() {
 
 // rebuild the table with notes
 bool ex_rebuild() {
-	free(t_notes);
+	m_free(t_notes);
 	return ex_build();
 	}
 
@@ -1029,7 +1029,7 @@ bool ex_select_section(char *result, const char *default_value) {
 			strcpy(result, table[i]);
 		r = true;
 		}
-	free(table);
+	m_free(table);
 	return r;
 	}
 
@@ -1355,7 +1355,7 @@ void explorer() {
 									}
 								}
 							if ( err ) {
-								free(new_section);
+								m_free(new_section);
 								new_section = NULL;
 								}
 							}
@@ -1380,7 +1380,7 @@ void explorer() {
 									}
 								else
 									succ ++;
-								free(nn);
+								m_free(nn);
 								}
 
 							// report
@@ -1390,7 +1390,7 @@ void explorer() {
 
 							// cleanup
 							list_clear(tagged);
-							free(new_section);
+							m_free(new_section);
 							}
 						}
 					
@@ -1461,7 +1461,7 @@ void explorer() {
 							if ( remove(t_notes[pos]->file) != 0 )
 								sprintf(status, "delete old note failed");
 							}
-						free(nn);
+						m_free(nn);
 						ex_rebuild();
 						if ( (pos = ex_find(buf)) == -1 ) pos = 0;
 						}
@@ -1486,7 +1486,7 @@ void explorer() {
 						if ( !tcnt )
 							list_clear(tagged);
 						}
-					free(opts);
+					m_free(opts);
 					ex_refresh();
 					}
 				break;
@@ -1521,7 +1521,7 @@ void explorer() {
 							ex_presh();
 							rule_exec('e', note->file);
 							}
-						free(note);
+						m_free(note);
 						}
 					else
 						sprintf(status, "failed: errno (%d) %s", errno, strerror(errno));
@@ -1533,7 +1533,7 @@ void explorer() {
 		} while ( !exitf );
 	nc_close();
 	tagged = list_destroy(tagged);
-	free(t_notes);
+	m_free(t_notes);
 	if ( strlen(onexit_cmd) )
 		system(onexit_cmd);
 	}
@@ -1810,7 +1810,7 @@ int main(int argc, char *argv[]) {
 				}
 			else
 				fprintf(stderr, "%s: errno %d: %s\n", note->file, errno, strerror(errno));
-			free(note);
+			m_free(note);
 			}
 		else
 			fprintf(stderr, "%s: errno %d: %s\n", name, errno, strerror(errno));

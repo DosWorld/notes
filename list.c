@@ -19,11 +19,12 @@
  * 	Written by Nicholas Christopoulos <nereus@freemail.gr>
  */
 
+#include "errio.h"
 #include "list.h"
 
 // create a new list and returns the pointer
 list_t *list_create() {
-	list_t *list = (list_t *) malloc(sizeof(list_t));
+	list_t *list = (list_t *) m_alloc(sizeof(list_t));
 	list->head = list->tail = NULL;
 	return list;
 	}
@@ -40,8 +41,8 @@ void list_clear(list_t *list) {
 		pre = cur;
 		cur = cur->next;
 		if ( pre->size )
-			free(pre->data);
-		free(pre);
+			m_free(pre->data);
+		m_free(pre);
 		}
 	list->head = list->tail = NULL;
 	}
@@ -49,19 +50,19 @@ void list_clear(list_t *list) {
 // destroy a list, returns always NULL
 list_t *list_destroy(list_t *list) {
 	list_clear(list);
-	free(list);
+	m_free(list);
 	return NULL;
 	}
 
 // adds a node at the end of the list; returns the pointer to the new node
 // use size = 0 to store only a pointer
 list_node_t *list_add(list_t *list, void *data, size_t size) {
-	list_node_t *np = (list_node_t *) malloc(sizeof(list_node_t));
+	list_node_t *np = (list_node_t *) m_alloc(sizeof(list_node_t));
 
 	// fill data
 	np->size = size;
 	if ( size ) {	// allocate space
-		np->data = (void *) malloc(size);
+		np->data = (void *) m_alloc(size);
 		if ( data ) // copy data
 			memcpy(np->data, data, size);
 		}
@@ -94,8 +95,8 @@ bool list_delete(list_t *list, list_node_t *node) {
 			if ( cur == list->head )	list->head = cur->next;
 			if ( cur == list->tail )	list->tail = prev;
 			if ( cur->size )
-				free(cur->data);
-			free(cur);
+				m_free(cur->data);
+			m_free(cur);
 			return true;
 			}
 		prev = cur;
@@ -116,7 +117,7 @@ list_node_t **list_to_index(list_t *list) {
 	list_node_t	**table = NULL;
 	size_t	i, count = list_count(list);
 	list_node_t *cur;
-	table = (list_node_t **) malloc(sizeof(list_node_t*) * (count + 1));
+	table = (list_node_t **) m_alloc(sizeof(list_node_t*) * (count + 1));
 	for ( i = 0, cur = list->head; cur; cur = cur->next, i ++ )
 		table[i] = cur;
 	table[count] = NULL;
@@ -129,7 +130,7 @@ void **list_to_table(list_t *list) {
 	void	**table = NULL;
 	size_t	i, count = list_count(list);
 	list_node_t *cur;
-	table = (void **) malloc(sizeof(void*) * (count + 1));
+	table = (void **) m_alloc(sizeof(void*) * (count + 1));
 	for ( i = 0, cur = list->head; cur; cur = cur->next, i ++ )
 		table[i] = cur->data;
 	table[i] = NULL;
