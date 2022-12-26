@@ -22,11 +22,11 @@
 #if !defined(__PANIC_H__)
 #define __PANIC_H__
 
+#include <stdio.h>
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-#include <stdio.h>
 
 // --------------------------------------------------------------------------------
 
