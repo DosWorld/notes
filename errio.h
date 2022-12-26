@@ -1,5 +1,5 @@
 /*
- *	error hangling routines
+ *	error handling routines
  * 
  *	Copyright (C) 2017-2022 Nicholas Christopoulos.
  *
