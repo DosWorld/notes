@@ -1594,14 +1594,25 @@ void init() {
 		}
 
 	// setting up default pager and editor
+	char editor[PATH_MAX], pager[PATH_MAX], buf[PATH_MAX];
 	if ( getenv("NOTESPAGER") )
-		rule_add("view * ${NOTESPAGER:-less} %f");
+		strcpy(pager, getenv("NOTESPAGER"));
+	else if ( getenv("PAGER") )
+		strcpy(pager, getenv("PAGER"));
 	else
-		rule_add("view * ${PAGER:-less} %f");
+		strcpy(pager, "less");
+	
 	if ( getenv("NOTESEDITOR") )
-		rule_add("edit * ${NOTESEDITOR:-vi} %f");
+		strcpy(editor, getenv("NOTESEDITOR"));
+	else if ( getenv("EDITOR") )
+		strcpy(editor, getenv("EDITOR"));
 	else
-		rule_add("edit * ${EDITOR:-vi} %f");
+		strcpy(editor, "vi");
+
+	snprintf(buf, PATH_MAX, "view * %s %%f", pager);
+	rule_add(buf);
+	snprintf(buf, PATH_MAX, "edit * %s %%f", editor);
+	rule_add(buf);
 	}
 
 //
